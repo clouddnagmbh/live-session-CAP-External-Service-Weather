@@ -1,89 +1,122 @@
-# 🌦️ 01 – Initial Setup
+# 🌦️ 02 – Consuming REST Service
 
-This branch represents the starting point of the **Consuming External Services – Weather** live session.
+This branch extends the initial CAP project by integrating an external REST service (OpenWeatherMap) and implementing a custom OData action.
 
-In this step, we set up the basic SAP CAP project structure, define the domain model in CDS, and prepare the service definition.
+In this step, we connect CAP to OpenWeatherMap via `cds.requires` and implement an action handler that:
 
-⚠️ In this branch, we focus purely on **modeling and service definition**.  
-The application is **not executed yet** (runtime, sample data, and external API integration come in later branches).
+1. Reads the stored coordinates for a city from the database  
+2. Calls the OpenWeatherMap REST API using those coordinates  
+3. Updates the temperature of the city in the local database  
+4. Returns the current temperature as the action result  
+
+⚠️ In this branch, we focus purely on configuration and implementation.  
+The application is **not executed yet**. Runtime and testing will follow in branch 03.
 
 ---
 
 ## 🎯 Objectives of This Step
 
-- Initialize the CAP project structure
-- Define the core domain model in `db/schema.cds`
-- Create the service definition in `srv/service.cds`
-- Establish a clean baseline for the upcoming steps (REST consumption, sample data, actions)
+- Configure an external REST service in CAP (`cds.requires`)
+- Consume OpenWeatherMap from within a CAP service handler
+- Implement a custom OData action: `updateTemperature(city)`
+- Update local persistence based on external API data
+- Prepare the project for execution in the next branch
 
 ---
 
-## 🗂 Project Structure
+## 🗂 Relevant Files
 
 ```
 .
 ├── db/
 │   └── schema.cds
 ├── srv/
-│   └── service.cds
-├── package.json
-└── ...
+│   ├── service.cds
+│   └── service.js
+└── package.json
 ```
 
-- `db/` contains the **domain model**
-- `srv/` contains the **service definition** (OData exposure)
+- `package.json` → REST service configuration (`weatherservice`)
+- `srv/service.cds` → OData service + action definition
+- `srv/service.js` → action implementation (REST call + DB update)
+- `db/schema.cds` → domain model (incl. coordinates + temperature fields)
 
 ---
 
-## 🧩 Domain Model (ER Model)
+## 🌐 External Service Configuration
 
-The initial data model defines three core concepts:
+In `package.json`, the OpenWeatherMap API is configured using `cds.requires`.
 
-- **Customer**: a customer entity
-- **Location**: a city/location with coordinates and (later) weather-related attributes
-- **OperatedIn**: a link entity that connects customers to locations (many-to-many relationship)
+Conceptually:
 
-```mermaid
-erDiagram
-    CUSTOMER ||--o{ OPERATEDIN : operates_in
-    LOCATION ||--o{ OPERATEDIN : runs_in
+- Define a required service (`weatherservice`)
+- Set `kind: "rest"`
+- Provide the base URL of the OpenWeatherMap API
+- Add required headers (API key)
 
-    CUSTOMER {
-        String name PK
-    }
+This allows CAP to treat the external REST API like a service connection.
 
-    LOCATION {
-        String  city PK
-        Decimal longitude
-        Decimal latitude
-        Decimal temperature
-        String  temp_unit
-    }
+At this stage:
+- The configuration exists
+- The handler logic is implemented
+- No runtime execution is performed yet
 
-    OPERATEDIN {
-        Association customer PK
-        Association location PK
-    }
+---
+
+## ⚙️ Action Definition
+
+In `srv/service.cds`, a custom action is defined:
+
+```
+action updateTemperature(city: String) returns Decimal;
 ```
 
-Notes:
+This action:
 
-- `OperatedIn` acts as a **join entity** between `Customer` and `Location`.
-- `coordinates` is modeled as a structured type in CDS; in the ER diagram it is represented as `longitude` and `latitude`.
+- Accepts a city name
+- Triggers the REST call
+- Updates the temperature in the `Location` entity
+- Returns the current temperature
 
----
-
-## 🌐 Service Definition
-
-The model is prepared to be exposed via an OData V4 service through `srv/service.cds`.
-
-At this step, we only define the service contract (projections / exposure).  
-Execution, testing, and service handlers are introduced in later branches.
+The action is defined structurally but will be executed in the upcoming branch.
 
 ---
 
-## 🧠 What You Achieved in This Branch
+## 🧠 Action Implementation
 
-- A clean CAP baseline with `db/` and `srv/`
-- A weather-related domain model with relationships
-- A prepared OData service definition (no runtime yet)
+In `srv/service.js`, the logic is implemented.
+
+High-level flow:
+
+1. Retrieve the `Location` by city
+2. Extract longitude and latitude
+3. Call OpenWeatherMap via `weatherservice`
+4. Read `main.temp` from the response
+5. Update the `Location.temperature` field
+6. Return the temperature
+
+This is where CAP connects local persistence with external data.
+
+---
+
+## 🔄 Runtime Flow (Conceptual)
+
+Once executed (in the next branch), the process will look like this:
+
+Client → OData Action → CAP Handler → OpenWeatherMap REST API  
+→ CAP updates local DB → Response returned to client
+
+---
+
+## 🧠 What You Learned in This Branch
+
+- How to configure external REST services in CAP
+- How to use `cds.connect.to()` for REST integration
+- How to implement custom OData actions
+- How to combine external API data with local persistence
+- How to prepare service logic before runtime execution
+
+---
+
+This branch prepares the integration layer.  
+In the next step we will add sample data and execute the application including action calls. 🌦️
