@@ -1,11 +1,11 @@
 # 🌦️ 02 – Consuming REST Service
 
-This branch extends the initial CAP project by integrating an external REST service (OpenWeatherMap) and implementing a custom OData action.
+This branch extends the initial CAP project by integrating an external REST service ([Open-Meteo](https://open-meteo.com)) and implementing a custom OData action.
 
-In this step, we connect CAP to OpenWeatherMap via `cds.requires` and implement an action handler that:
+In this step, we connect CAP to Open-Meteo via `cds.requires` and implement an action handler that:
 
 1. Reads the stored coordinates for a city from the database  
-2. Calls the OpenWeatherMap REST API using those coordinates  
+2. Calls the Open-Meteo REST API using those coordinates  
 3. Updates the temperature of the city in the local database  
 4. Returns the current temperature as the action result  
 
@@ -17,7 +17,7 @@ The application is **not executed yet**. Runtime and testing will follow in bran
 ## 🎯 Objectives of This Step
 
 - Configure an external REST service in CAP (`cds.requires`)
-- Consume OpenWeatherMap from within a CAP service handler
+- Consume Open-Meteo from within a CAP service handler
 - Implement a custom OData action: `updateTemperature(city)`
 - Update local persistence based on external API data
 - Prepare the project for execution in the next branch
@@ -45,14 +45,15 @@ The application is **not executed yet**. Runtime and testing will follow in bran
 
 ## 🌐 External Service Configuration
 
-In `package.json`, the OpenWeatherMap API is configured using `cds.requires`.
+In `package.json`, the Open-Meteo API is configured using `cds.requires`.
 
 Conceptually:
 
 - Define a required service (`weatherservice`)
 - Set `kind: "rest"`
-- Provide the base URL of the OpenWeatherMap API
-- Add required headers (API key)
+- Provide the base URL of the Open-Meteo API
+
+Open-Meteo needs no API key, so there are no credentials or `.env` file to manage.
 
 This allows CAP to treat the external REST API like a service connection.
 
@@ -90,8 +91,8 @@ High-level flow:
 
 1. Retrieve the `Location` by city
 2. Extract longitude and latitude
-3. Call OpenWeatherMap via `weatherservice`
-4. Read `main.temp` from the response
+3. Call Open-Meteo via `weatherservice`
+4. Read `current.temperature_2m` from the response
 5. Update the `Location.temperature` field
 6. Return the temperature
 
@@ -103,7 +104,7 @@ This is where CAP connects local persistence with external data.
 
 Once executed (in the next branch), the process will look like this:
 
-Client → OData Action → CAP Handler → OpenWeatherMap REST API  
+Client → OData Action → CAP Handler → Open-Meteo REST API  
 → CAP updates local DB → Response returned to client
 
 ---
@@ -120,3 +121,7 @@ Client → OData Action → CAP Handler → OpenWeatherMap REST API
 
 This branch prepares the integration layer.  
 In the next step we will add sample data and execute the application including action calls. 🌦️
+
+---
+
+Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). The free API is for non-commercial use.
