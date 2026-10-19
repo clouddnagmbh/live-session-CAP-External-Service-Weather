@@ -21,7 +21,7 @@ module.exports = cds.service.impl(function () {
 
         // Open-Meteo's free API sometimes answers 503 "overloaded" – retry once
         const res = await weatherAPI.tx(req).get(path).catch((err) => {
-            if (err.reason?.status !== 503) throw err;
+            if (err.reason?.response?.status !== 503) throw err;
             return weatherAPI.tx(req).get(path);
         });
 
