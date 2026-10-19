@@ -1,6 +1,6 @@
 # 🌦️ Consuming External Services – Weather
 
-This repository is structured as a step-by-step workshop demonstrating how to consume an external REST service [OpenWeatherMap](https://openweathermap.org/api) within an SAP Cloud Application Programming Model (CAP) application.
+This repository is structured as a step-by-step workshop demonstrating how to consume an external REST service [Open-Meteo](https://open-meteo.com) within an SAP Cloud Application Programming Model (CAP) application.
 
 Each branch represents a dedicated stage of the development process.
 The `main` branch contains the final, completed version of the application.
@@ -33,7 +33,7 @@ Below is an overview of the branches and their focus areas:
 * [**02 - Consuming REST Service**](https://github.com/clouddnagmbh/live-session-CAP-external-service-weather/tree/02-consuming-rest-service)
 
   * **Focus:**
-      - Integrating an external REST API (OpenWeatherMap)
+      - Integrating an external REST API (Open-Meteo, no API key needed)
       - Implementing custom service logic in `srv/service.js`
       - Calling the external API using Node.js
       - Mapping external JSON response to CAP entities
@@ -57,7 +57,7 @@ Below is an overview of the branches and their focus areas:
 The final application (main branch) consists of:
 - **db/** → CDS data model & sample data
 - **srv/** → Service definition & business logic
-- **External REST Integration** → OpenWeatherMap API
+- **External REST Integration** → Open-Meteo API
 - **SQLite (in-memory)** for local development
 
 High-level flow:
@@ -108,7 +108,7 @@ After completing all branches, you will understand:
 - Node.js
 - OData V4
 - SQLite
-- OpenWeatherMap REST API
+- Open-Meteo REST API
 
 ---
 
@@ -119,3 +119,7 @@ You can explore a specific step locally by checking out the branch:
 
 Or start directly with the completed implementation:
 `git checkout main`
+
+---
+
+Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). The free API is for non-commercial use.

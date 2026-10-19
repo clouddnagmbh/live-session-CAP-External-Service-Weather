@@ -14,24 +14,17 @@ module.exports = cds.service.impl(function () {
             )
             .where({ city });
 
-        if (!loc) {
-            req.error(404, `City not found: ${city}`);
-        }
-
-        const apiKey = process.env.OPENWEATHER_API_KEY;
-        if (!apiKey) {
-            req.error(500, 'OPENWEATHER_API_KEY is not configured');
-        }
+        if (!loc) return req.reject(404, `City not found: ${city}`);
 
         const weatherAPI = await cds.connect.to('weatherservice');
         const res = await weatherAPI.tx(req).get(
-            `/data/2.5/weather?units=metric&appid=${apiKey}&lat=${loc.latitude}&lon=${loc.longitude}`
+            `/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m`
         );
 
         await UPDATE(Location)
-            .set({ temperature: res.main.temp })
+            .set({ temperature: res.current.temperature_2m })
             .where({ city });
 
-        return res.main.temp;
+        return res.current.temperature_2m;
     });
 });
