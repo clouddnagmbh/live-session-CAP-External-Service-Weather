@@ -94,7 +94,7 @@ Now the complete integration works end-to-end:
 
 1. Client calls the `updateTemperature` action
 2. CAP retrieves the location and its coordinates
-3. OpenWeatherMap REST API is called
+3. Open-Meteo REST API is called
 4. Temperature is extracted from the response
 5. The local `Location.temperature` field is updated
 6. The updated temperature is returned to the client
@@ -154,8 +154,12 @@ At this stage, you have a fully functional CAP application that:
 
 - Manages customers and locations
 - Stores geographic coordinates
-- Fetches live weather data from OpenWeatherMap
+- Fetches live weather data from Open-Meteo
 - Persists temperature data locally
 - Exposes everything via OData V4
 
 This concludes the live session implementation. 🌦️🚀
+
+---
+
+Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). The free API is for non-commercial use.
