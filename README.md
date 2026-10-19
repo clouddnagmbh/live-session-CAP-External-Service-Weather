@@ -92,6 +92,7 @@ High-level flow:
 1. Retrieve the `Location` by city
 2. Extract longitude and latitude
 3. Call Open-Meteo via `weatherservice`
+   (retried once if Open-Meteo answers 503 "overloaded")
 4. Read `current.temperature_2m` from the response
 5. Update the `Location.temperature` field
 6. Return the temperature

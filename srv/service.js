@@ -17,9 +17,13 @@ module.exports = cds.service.impl(function () {
         if (!loc) return req.reject(404, `City not found: ${city}`);
 
         const weatherAPI = await cds.connect.to('weatherservice');
-        const res = await weatherAPI.tx(req).get(
-            `/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m`
-        );
+        const path = `/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m`;
+
+        // Open-Meteo's free API sometimes answers 503 "overloaded" – retry once
+        const res = await weatherAPI.tx(req).get(path).catch((err) => {
+            if (err.reason?.status !== 503) throw err;
+            return weatherAPI.tx(req).get(path);
+        });
 
         await UPDATE(Location)
             .set({ temperature: res.current.temperature_2m })
