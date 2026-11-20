@@ -41,11 +41,11 @@ The initial data model defines three core concepts:
 
 - **Customer**: a customer entity
 - **Location**: a city/location with coordinates and (later) weather-related attributes
-- **OperatedIn**: a link entity that connects customers to locations (many-to-many relationship)
+- **OperatedIn**: a link entity that assigns each customer to the one location it operates in (a location can serve several customers)
 
 ```mermaid
 erDiagram
-    CUSTOMER ||--o{ OPERATEDIN : operates_in
+    CUSTOMER ||--o| OPERATEDIN : operates_in
     LOCATION ||--o{ OPERATEDIN : runs_in
 
     CUSTOMER {
@@ -62,13 +62,13 @@ erDiagram
 
     OPERATEDIN {
         Association customer PK
-        Association location PK
+        Association location FK
     }
 ```
 
 Notes:
 
-- `OperatedIn` acts as a **join entity** between `Customer` and `Location`.
+- `OperatedIn` acts as a **join entity** between `Customer` and `Location`; only `customer` is its key, so each customer has exactly one location.
 - `coordinates` is modeled as a structured type in CDS; in the ER diagram it is represented as `longitude` and `latitude`.
 
 ---
