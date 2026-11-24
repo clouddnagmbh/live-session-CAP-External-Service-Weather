@@ -1,22 +1,22 @@
+using { cuid, managed } from '@sap/cds/common';
+
 namespace at.clouddna.Weather;
 
-type Coordinates : {
+type Coordinates {
     longitude : Decimal(9, 6);
     latitude  : Decimal(9, 6);
 }
 
-entity Customer {
-    key name : String(20);
+entity Customers : cuid, managed {
+    name     : String(100) @mandatory;
+    location : Association to Locations;
 }
 
-entity Location {
-    key city        : String(20);
-        coordinates : Coordinates;
-        temperature : Decimal;
-        temp_unit   : String(2);
-}
-
-entity OperatedIn {
-    key customer : Association to one Customer not null;
-        location : Association to one Location not null;
+entity Locations : cuid, managed {
+    city        : String(50) @mandatory;
+    coordinates : Coordinates;
+    temperature : Decimal(4, 1);
+    unit        : String(1) default 'C';
+    customers   : Association to many Customers
+                      on customers.location = $self;
 }

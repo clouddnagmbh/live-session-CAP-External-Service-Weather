@@ -37,38 +37,36 @@ The application is **not executed yet** (runtime, sample data, and external API 
 
 ## 🧩 Domain Model (ER Model)
 
-The initial data model defines three core concepts:
+The initial data model defines two entities. Both use the common aspects `cuid` (UUID key `ID`) and `managed` (`createdAt`, `createdBy`, `modifiedAt`, `modifiedBy`) from `@sap/cds/common`:
 
-- **Customer**: a customer entity
-- **Location**: a city/location with coordinates and (later) weather-related attributes
-- **OperatedIn**: a link entity that assigns each customer to the one location it operates in (a location can serve several customers)
+- **Customers**: a customer with a managed association to the location it operates in
+- **Locations**: a city with coordinates and (later) the current temperature; `customers` is the back link
 
 ```mermaid
 erDiagram
-    CUSTOMER ||--o| OPERATEDIN : operates_in
-    LOCATION ||--o{ OPERATEDIN : runs_in
+    LOCATIONS ||--o{ CUSTOMERS : "operates in"
 
-    CUSTOMER {
-        String name PK
+    CUSTOMERS {
+        UUID    ID PK
+        String  name
+        UUID    location_ID FK
     }
 
-    LOCATION {
-        String  city PK
+    LOCATIONS {
+        UUID    ID PK
+        String  city
         Decimal longitude
         Decimal latitude
         Decimal temperature
-        String  temp_unit
-    }
-
-    OPERATEDIN {
-        Association customer PK
-        Association location FK
+        String  unit
     }
 ```
 
 Notes:
 
-- `OperatedIn` acts as a **join entity** between `Customer` and `Location`; only `customer` is its key, so each customer has exactly one location.
+- Entity names are plural and keys are UUIDs, following the CAP [domain modeling best practices](https://cap.cloud.sap/docs/guides/domain/).
+- `location` is a managed association, so CAP adds the foreign key `location_ID`. Each customer operates in one location; a location can serve several customers.
+- The `managed` fields are left out of the diagram; CAP fills them automatically.
 - `coordinates` is modeled as a structured type in CDS; in the ER diagram it is represented as `longitude` and `latitude`.
 
 ---
