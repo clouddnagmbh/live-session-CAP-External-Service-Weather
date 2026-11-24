@@ -76,7 +76,7 @@ This action:
 
 - Accepts a city name
 - Triggers the REST call
-- Updates the temperature in the `Location` entity
+- Updates the temperature in the `Locations` entity
 - Returns the current temperature
 
 The action is defined structurally but will be executed in the upcoming branch.
@@ -89,12 +89,12 @@ In `srv/service.js`, the logic is implemented.
 
 High-level flow:
 
-1. Retrieve the `Location` by city
+1. Retrieve the location from `Locations` by city
 2. Extract longitude and latitude
 3. Call Open-Meteo via `weatherservice`
    (retried once if Open-Meteo answers 503 "overloaded")
 4. Read `current.temperature_2m` from the response
-5. Update the `Location.temperature` field
+5. Update its `temperature` field
 6. Return the temperature
 
 This is where CAP connects local persistence with external data.

@@ -2,13 +2,13 @@ import cds from '@sap/cds';
 
 export class SensorData extends cds.ApplicationService {
     init() {
-        const { Location } = this.entities;
+        const { Locations } = this.entities;
 
         this.on('updateTemperature', async (req) => {
             const { city } = req.data;
 
             const loc = await SELECT.one
-                .from(Location)
+                .from(Locations)
                 .columns(
                     'coordinates_latitude as latitude',
                     'coordinates_longitude as longitude'
@@ -26,7 +26,7 @@ export class SensorData extends cds.ApplicationService {
                 return weatherAPI.tx(req).get(path);
             });
 
-            await UPDATE(Location)
+            await UPDATE(Locations)
                 .set({ temperature: res.current.temperature_2m })
                 .where({ city });
 
