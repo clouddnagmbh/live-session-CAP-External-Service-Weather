@@ -31,9 +31,8 @@ This is the first branch where the application is fully executed and tested end-
 ├── db/
 │   ├── schema.cds
 │   └── data/
-│       ├── at.clouddna.Weather-Customer.csv
-│       ├── at.clouddna.Weather-Location.csv
-│       └── at.clouddna.Weather-OperatedIn.csv
+│       ├── at.clouddna.Weather-Customers.csv
+│       └── at.clouddna.Weather-Locations.csv
 ├── srv/
 │   ├── service.cds
 │   └── service.js
@@ -56,7 +55,7 @@ cds add data
 
 This creates the corresponding CSV files for your entities inside `db/data/`.
 
-You can then fill them with initial test data (e.g. customers, cities, coordinates).
+You can then fill them with initial test data (e.g. customers, cities, coordinates). The generated header also lists the `managed` columns (`createdAt`, …); our CSV files leave them out, because CAP fills them automatically.
 
 ---
 
@@ -96,7 +95,7 @@ Now the complete integration works end-to-end:
 2. CAP retrieves the location and its coordinates
 3. Open-Meteo REST API is called
 4. Temperature is extracted from the response
-5. The local `Location.temperature` field is updated
+5. The `temperature` of the location is updated
 6. The updated temperature is returned to the client
 
 This combines:
@@ -119,19 +118,19 @@ Payload:
 
 ```
 {
-  "city": "Berlin"
+  "city": "Walldorf"
 }
 ```
 
 After execution:
 
 - The temperature is returned in the response
-- The `Location` entry is updated in the database
+- The `Locations` entry is updated in the database (including `modifiedAt`)
 
 You can verify the update via:
 
 ```
-GET /odata/v4/sensor-data/Location
+GET /odata/v4/sensor-data/Locations
 ```
 
 ---
